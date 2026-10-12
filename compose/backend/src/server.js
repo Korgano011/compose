@@ -1,13 +1,19 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { keyValueRouter } = require('./routes/store'); 
-const { healthRouter } = require('./routes/health'); 
+const { keyValueRouter } = require('./routes/store');
+const { healthRouter } = require('./routes/health');
 
 const port = process.env.PORT;
 const app = express();
 
 app.use(bodyParser.json());
+app.get('/', (req, res) => {
+    return res.json({
+        message: 'Welcome to our Key-Value store',
+    })
+})
+
 app.use('/health', healthRouter);
 app.use('/store', keyValueRouter);
 
@@ -20,12 +26,12 @@ mongoose.connect(`mongodb://${process.env.MONGODB_HOST}/${process.env.KEY_VALUE_
     connectTimeoutMS: 500
 })
     .then(() => {
-    app.listen(port, () => {
-        console.log(`Listening on port ${port}`);
-    });
-     console.log('Connected to DB');
+        app.listen(port, () => {
+            console.log(`Listening on port ${port}`);
+        });
+        console.log('Connected to DB!');
     })
-    .catch(err => { 
+    .catch(err => {
         console.error('Something went wrong!');
         console.error(err);
     });
